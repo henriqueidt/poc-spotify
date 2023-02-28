@@ -4,25 +4,26 @@ import {
   convertToHoursMinutesSeconds,
   getPercentage,
 } from "../../utils/numberUtils";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import PauseCircleIcon from "@mui/icons-material/PauseCircle";
+import { AudioControls } from "./audioControls/audioControls";
+
 import "./musicPlayer.css";
+import { PlayerControls } from "./playerControls/playerControls";
 
 function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const [musicUrl, setMusicUrl] = useState("");
   const [elapsedTime, setElapsedTime] = useState("0:00");
   const [progress, setProgress] = useState(0);
   const [musicDuration, setMusicDuration] = useState("0:00");
 
   const player = useRef();
-  const progressRef = useRef();
 
   useEffect(() => {
     fetch("http://localhost:8080/music", {
       headers: {
         "Accept-Encoding": "identity",
-        Range: "bytes=0-999999",
+        // Range: "bytes=0-999999",
       },
     })
       .then((response) => {
@@ -58,6 +59,7 @@ function MusicPlayer() {
 
   const switchMute = () => {
     player.current.muted = !player.current.muted;
+    setIsMuted(!isMuted);
   };
 
   const setVolume = (value) => (player.current.volume = value);
@@ -96,40 +98,25 @@ function MusicPlayer() {
 
   return (
     <div className="music-player">
-      <audio
-        controls
-        src={musicUrl}
-        ref={player}
-        onTimeUpdate={onTimeUpdate}
-        onDurationChange={onDurationChange}
-      >
-        Your browser does not support the <code>audio</code> element.
-      </audio>
-
-      <button onClick={onClickPlay}>
-        {isPlaying ? <PauseCircleIcon /> : <PlayCircleIcon />}
-      </button>
-      <button onClick={onClickMute}>mute</button>
-      <input type="range" name="volume" id="volume" onChange={onChangeVolume} />
-      <div className="music-player__playback-bar">
-        <div className="music-player__playback-time">{elapsedTime}</div>
-        <div className="music-player__progress-container">
-          <input
-            ref={progressRef}
-            style={{
-              backgroundSize: `${progress}% 100%`,
-            }}
-            type="range"
-            name="progress"
-            id="progress"
-            className="music-player__progress"
-            onChange={onChangeProgress}
-            value={progress}
-            min={0}
-            max={100}
-          />
-        </div>
-        <div className="music-player__playback-time">{musicDuration}</div>
+      <div className="music-player__column"></div>
+      <div className="music-player__column">
+        <PlayerControls
+          {...{
+            musicUrl,
+            player,
+            onTimeUpdate,
+            onDurationChange,
+            onClickPlay,
+            isPlaying,
+            progress,
+            onChangeProgress,
+            musicDuration,
+            elapsedTime,
+          }}
+        />
+      </div>
+      <div className="music-player__column">
+        <AudioControls {...{ onClickMute, onChangeVolume, isMuted }} />
       </div>
     </div>
   );
