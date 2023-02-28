@@ -16,3 +16,5 @@ export const convertToHoursMinutesSeconds = (totalSeconds) => {
 
   return isoStringDate.slice(11, 19);
 };
+
+export const getPercentage = (part, total) => (part / total) * 100;

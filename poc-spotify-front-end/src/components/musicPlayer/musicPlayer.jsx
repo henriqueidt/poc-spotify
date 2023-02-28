@@ -2,17 +2,21 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   convertPercentageToDecimal,
   convertToHoursMinutesSeconds,
+  getPercentage,
 } from "../../utils/numberUtils";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import PauseIcon from "@mui/icons-material/Pause";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import PauseCircleIcon from "@mui/icons-material/PauseCircle";
+import "./musicPlayer.css";
 
 function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [musicUrl, setMusicUrl] = useState("");
   const [elapsedTime, setElapsedTime] = useState("0:00");
+  const [progress, setProgress] = useState(0);
   const [musicDuration, setMusicDuration] = useState("0:00");
 
   const player = useRef();
+  const progressRef = useRef();
 
   useEffect(() => {
     fetch("http://localhost:8080/music", {
@@ -66,17 +70,23 @@ function MusicPlayer() {
   };
 
   const onChangeProgress = ({ target }) => {
-    const newTime = convertPercentageToDecimal(
-      player.current.duration * target.value
-    );
+    const { value } = target;
+
+    setProgress(value);
+
+    const newTime = convertPercentageToDecimal(player.current.duration * value);
     player.current.currentTime = newTime;
     onTimeUpdate();
   };
 
   // TODO -> Find a way not to rerender on every time change
   const onTimeUpdate = () => {
+    const { currentTime, duration } = player.current;
     const time = convertToHoursMinutesSeconds(player.current.currentTime);
     setElapsedTime(time);
+    if (duration) {
+      setProgress(getPercentage(currentTime, duration));
+    }
   };
 
   const onDurationChange = () => {
@@ -85,7 +95,7 @@ function MusicPlayer() {
   };
 
   return (
-    <>
+    <div className="music-player">
       <audio
         controls
         src={musicUrl}
@@ -96,21 +106,32 @@ function MusicPlayer() {
         Your browser does not support the <code>audio</code> element.
       </audio>
 
-      <div>{elapsedTime}</div>
-      <div>{musicDuration}</div>
-
       <button onClick={onClickPlay}>
-        {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
+        {isPlaying ? <PauseCircleIcon /> : <PlayCircleIcon />}
       </button>
       <button onClick={onClickMute}>mute</button>
       <input type="range" name="volume" id="volume" onChange={onChangeVolume} />
-      <input
-        type="range"
-        name="progress"
-        id="progress"
-        onChange={onChangeProgress}
-      />
-    </>
+      <div className="music-player__playback-bar">
+        <div className="music-player__playback-time">{elapsedTime}</div>
+        <div className="music-player__progress-container">
+          <input
+            ref={progressRef}
+            style={{
+              backgroundSize: `${progress}% 100%`,
+            }}
+            type="range"
+            name="progress"
+            id="progress"
+            className="music-player__progress"
+            onChange={onChangeProgress}
+            value={progress}
+            min={0}
+            max={100}
+          />
+        </div>
+        <div className="music-player__playback-time">{musicDuration}</div>
+      </div>
+    </div>
   );
 }
 
