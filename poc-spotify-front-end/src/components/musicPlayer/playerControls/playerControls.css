@@ -2,12 +2,18 @@
   display: none;
 }
 
-.player-controls__play-btn {
+.player-controls__buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* .player-controls__play-btn {
   background-color: transparent;
   border: none;
   color: #fff;
   padding: 0;
-}
+} */
 
 .player-controls__playback-bar {
   display: flex;
