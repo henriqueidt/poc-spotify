@@ -13,6 +13,7 @@ function MusicPlayer() {
   const [fileName, setFileName] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(50);
   const [musicUrl, setMusicUrl] = useState("");
   const [elapsedTime, setElapsedTime] = useState("0:00");
   const [progress, setProgress] = useState(0);
@@ -69,16 +70,23 @@ function MusicPlayer() {
 
   const switchMute = () => {
     player.current.muted = !player.current.muted;
+    if (!isMuted) {
+      setVolume(0);
+    }
     setIsMuted(!isMuted);
   };
-
-  const setVolume = (value) => (player.current.volume = value);
 
   const onClickMute = () => switchMute();
 
   const onChangeVolume = ({ target }) => {
+    setVolume(target.value);
     const rangeDecimal = convertPercentageToDecimal(target.value);
-    setVolume(rangeDecimal);
+    player.current.volume = rangeDecimal;
+    if (rangeDecimal === 0) {
+      setIsMuted(true);
+    } else {
+      setIsMuted(false);
+    }
   };
 
   const onChangeProgress = ({ target }) => {
@@ -126,7 +134,7 @@ function MusicPlayer() {
         />
       </div>
       <div className="music-player__column">
-        <AudioControls {...{ onClickMute, onChangeVolume, isMuted }} />
+        <AudioControls {...{ onClickMute, onChangeVolume, isMuted, volume }} />
       </div>
     </div>
   );

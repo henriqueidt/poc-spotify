@@ -1,6 +1,7 @@
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import PauseCircleIcon from "@mui/icons-material/PauseCircle";
 import "./playerControls.css";
+import { RangeInput } from "../../rangeInput/rangeInput";
 
 export const PlayerControls = ({
   musicUrl,
@@ -36,21 +37,7 @@ export const PlayerControls = ({
       </button>
       <div className="player-controls__playback-bar">
         <div className="player-controls__playback-time">{elapsedTime}</div>
-        <div className="player-controls__progress-container">
-          <input
-            style={{
-              backgroundSize: `${progress}% 100%`,
-            }}
-            type="range"
-            name="progress"
-            id="progress"
-            className="player-controls__progress"
-            onChange={onChangeProgress}
-            value={progress}
-            min={0}
-            max={100}
-          />
-        </div>
+        <RangeInput onChangeProgress={onChangeProgress} progress={progress} />
         <div className="player-controls__playback-time">{musicDuration}</div>
       </div>
     </>
