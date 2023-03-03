@@ -10,11 +10,11 @@ export const AudioControls = ({
   volume,
 }) => {
   return (
-    <>
+    <div className="audio-controls">
       <button onClick={onClickMute} className="audio-controls__mute-btn">
         {isMuted ? <VolumeOffIcon /> : <VolumeUpIcon />}
       </button>
       <RangeInput progress={volume} onChangeProgress={onChangeVolume} />
-    </>
+    </div>
   );
 };

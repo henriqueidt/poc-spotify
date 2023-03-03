@@ -1,8 +1,10 @@
 .music-player {
   background-color: #181818;
-  height: 400px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  height: 90px;
 }
 
 .music-player__column {
