@@ -8,6 +8,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourceRegion;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,19 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-@CrossOrigin
+@CrossOrigin(exposedHeaders = {"Content-Disposition"})
 @RestController
 public class MusicController {
 	
 	@GetMapping("/music")
 	public ResponseEntity<InputStreamResource> streamMusic(HttpServletRequest request) throws Exception {
-		InputStream inputStream = getClass().getResourceAsStream("music.mp3");
+		InputStream inputStream = getClass().getResourceAsStream("5th symphony - bethoveen.mp3");
 		InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
 		
 		HttpHeaders headers = new HttpHeaders();
-		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=music.mp3");
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=5th symphony - bethoveen.mp3");
 	    headers.add(HttpHeaders.CONTENT_TYPE, "audio/mpeg");
 	    headers.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(inputStream.available()));
+
 		return ResponseEntity.ok()
 				.headers(headers)
 				.body(inputStreamResource);

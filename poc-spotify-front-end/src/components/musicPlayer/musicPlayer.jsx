@@ -10,6 +10,7 @@ import "./musicPlayer.css";
 import { PlayerControls } from "./playerControls/playerControls";
 
 function MusicPlayer() {
+  const [fileName, setFileName] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [musicUrl, setMusicUrl] = useState("");
@@ -30,6 +31,15 @@ function MusicPlayer() {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
+
+        const contentDispositionHeader = response.headers.get(
+          "Content-Disposition"
+        );
+
+        const fileNameFromHeader = contentDispositionHeader
+          .split("filename=")[1]
+          .split(".")[0];
+        setFileName(fileNameFromHeader);
         return response;
       })
       .then((response) => response.blob())
@@ -98,7 +108,7 @@ function MusicPlayer() {
 
   return (
     <div className="music-player">
-      <div className="music-player__column"></div>
+      <div className="music-player__column">{fileName}</div>
       <div className="music-player__column">
         <PlayerControls
           {...{
