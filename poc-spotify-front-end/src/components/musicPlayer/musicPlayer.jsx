@@ -7,6 +7,7 @@ import {
 import { AudioControls } from "./audioControls/audioControls";
 
 import "./musicPlayer.css";
+import { NowPlaying } from "./nowPlaying/nowPlaying";
 import { PlayerControls } from "./playerControls/playerControls";
 
 function MusicPlayer() {
@@ -116,7 +117,9 @@ function MusicPlayer() {
 
   return (
     <div className="music-player">
-      <div className="music-player__column">{fileName}</div>
+      <div className="music-player__column">
+        <NowPlaying fileName={fileName} />
+      </div>
       <div className="music-player__column">
         <PlayerControls
           {...{
