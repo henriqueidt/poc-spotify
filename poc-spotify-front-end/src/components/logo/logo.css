@@ -1,0 +1,10 @@
+.logo {
+  margin-bottom: 1.125rem;
+  display: flex;
+  padding: 0 1.5rem;
+}
+
+.logo__img {
+  height: 2.5rem;
+  color: #fff;
+}
