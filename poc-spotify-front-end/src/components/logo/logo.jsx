@@ -3,11 +3,7 @@ import "./logo.css";
 export const Logo = () => {
   return (
     <a href="/" className="logo">
-      <svg
-        viewBox="0 0 1134 340"
-        class="fwTMCeAaUoWDj9WcQbgy"
-        className="logo__img"
-      >
+      <svg viewBox="0 0 1134 340" className="logo__img">
         <title>Spotify</title>
         <path
           fill="currentColor"

@@ -45,15 +45,6 @@ const playlists = [
     label: "Samba",
   },
   {
-    label: "Pagode",
-  },
-  {
-    label: "Brasil top 100",
-  },
-  {
-    label: "Funk",
-  },
-  {
     label: "Folk",
   },
   {
@@ -70,13 +61,13 @@ export const NavBar = () => {
       <Logo />
       <ul className="nav-bar__list">
         {links.map((link) => (
-          <NavItem {...link} />
+          <NavItem {...link} key={link.label} />
         ))}
       </ul>
       <hr className="nav-bar__separator" />
       <ul className="nav-bar__list">
         {playlists.map((link) => (
-          <NavItem {...link} />
+          <NavItem {...link} key={link.label} />
         ))}
       </ul>
     </nav>

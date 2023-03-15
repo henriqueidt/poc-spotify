@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,13 +24,13 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestController
 public class MusicController {
 	
-	@GetMapping("/music")
-	public ResponseEntity<InputStreamResource> streamMusic(HttpServletRequest request) throws Exception {
-		InputStream inputStream = getClass().getResourceAsStream("5th symphony - bethoveen.mp3");
+	@GetMapping("/music/{name}")
+	public ResponseEntity<InputStreamResource> streamMusic(HttpServletRequest request, @PathVariable String name) throws Exception {
+		InputStream inputStream = getClass().getResourceAsStream(name + ".mp3");
 		InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
 		
 		HttpHeaders headers = new HttpHeaders();
-		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=5th symphony - bethoveen.mp3");
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + name + ".mp3");
 	    headers.add(HttpHeaders.CONTENT_TYPE, "audio/mpeg");
 	    headers.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(inputStream.available()));
 

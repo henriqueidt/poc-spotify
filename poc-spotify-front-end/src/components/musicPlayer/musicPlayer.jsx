@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useContext,
+} from "react";
+import { MusicContext } from "../../App";
 import {
   convertPercentageToDecimal,
   convertToHoursMinutesSeconds,
@@ -20,36 +27,43 @@ function MusicPlayer() {
   const [progress, setProgress] = useState(0);
   const [musicDuration, setMusicDuration] = useState("0:00");
 
+  const { playingMusic } = useContext(MusicContext);
+
   const player = useRef();
 
   useEffect(() => {
-    fetch("http://localhost:8080/music", {
-      headers: {
-        "Accept-Encoding": "identity",
-        // Range: "bytes=0-999999",
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-
-        const contentDispositionHeader = response.headers.get(
-          "Content-Disposition"
-        );
-
-        const fileNameFromHeader = contentDispositionHeader
-          .split("filename=")[1]
-          .split(".")[0];
-        setFileName(fileNameFromHeader);
-        return response;
+    if (playingMusic?.length > 0) {
+      fetch(`http://localhost:8080/music/${playingMusic}`, {
+        headers: {
+          "Accept-Encoding": "identity",
+          // Range: "bytes=0-999999",
+        },
       })
-      .then((response) => response.blob())
-      .then((response) => setMusicUrl(URL.createObjectURL(response)))
-      .catch((error) => {
-        console.error("Error fetching music:", error);
-      });
-  }, []);
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+
+          const contentDispositionHeader = response.headers.get(
+            "Content-Disposition"
+          );
+
+          const fileNameFromHeader = contentDispositionHeader
+            .split("filename=")[1]
+            .split(".")[0];
+          setFileName(fileNameFromHeader);
+          return response;
+        })
+        .then((response) => response.blob())
+        .then((response) => setMusicUrl(URL.createObjectURL(response)))
+        .then(() => {
+          player.current.addEventListener("canplaythrough", () => playAudio());
+        })
+        .catch((error) => {
+          console.error("Error fetching music:", error);
+        });
+    }
+  }, [playingMusic]);
 
   const playAudio = () => {
     setIsPlaying(true);
